@@ -71,11 +71,19 @@ fn update_text_box_example(
                         bottom: StyleProp::Value(Units::Pixels(10.0)),
                         ..Default::default()
                     }}
-                    text_box={TextBoxProps { value: textbox_state.value1.clone(), ..Default::default()}}
+                    text_box={TextBoxProps { 
+                        value: textbox_state.value1.clone(), 
+                        placeholder: Some("Write something!".to_string()), 
+                        ..Default::default()
+                    }}
                     on_change={on_change}
                 />
                 <TextBoxBundle
-                    text_box={TextBoxProps { value: textbox_state.value2.clone(), ..Default::default()}}
+                    text_box={TextBoxProps { 
+                        value: textbox_state.value2.clone(), 
+                        placeholder: Some("Write something!".to_string()), 
+                        ..Default::default()
+                    }}
                     on_change={on_change2}
                 />
             </ElementBundle>
