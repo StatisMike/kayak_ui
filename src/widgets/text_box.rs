@@ -413,10 +413,10 @@ fn set_graphemes(
 
     if let Some(font) = font_assets.get(&font_handle) {
         state.graphemes = font
-        .get_graphemes(&state.current_value)
-        .iter()
-        .map(|s| s.to_string())
-        .collect::<Vec<_>>();
+            .get_graphemes(&state.current_value)
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>();
     }
 }
 
