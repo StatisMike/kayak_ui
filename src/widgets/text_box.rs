@@ -223,13 +223,24 @@ pub fn text_box_render(
                                 }
                                 let cursor_pos = state.cursor_position;
                                 if is_backspace(c) {
-                                    if !state.current_value.is_empty() {
+                                    if !state.current_value.is_empty() && cursor_pos > 0 {
                                         let char_pos: usize = state.graphemes[0..cursor_pos - 1]
-                                            .iter()
-                                            .map(|g| g.len())
-                                            .sum();
+                                        .iter()
+                                        .map(|g| g.len())
+                                        .sum();
                                         state.current_value.remove(char_pos);
                                         state.cursor_position -= 1;
+                                        
+                                    }
+                                } else if is_delete(c) { 
+                                    if !state.current_value.is_empty() {
+                                        let char_pos: usize = state.graphemes[0..cursor_pos]
+                                        .iter()
+                                        .map(|g| g.len())
+                                        .sum();
+                                        if char_pos < state.current_value.len() {
+                                            state.current_value.remove(char_pos);
+                                        }
                                     }
                                 } else if !c.is_control() {
                                     let char_pos: usize = state.graphemes[0..cursor_pos]
@@ -335,6 +346,12 @@ pub fn text_box_render(
                 ..Default::default()
             };
 
+            let content = if text_box.value.is_empty() && text_box.placeholder.is_some() {
+                text_box.placeholder.clone().unwrap()
+            } else {
+                text_box.value.clone()
+            };
+
             let parent_id = Some(entity);
             rsx! {
                 <BackgroundBundle styles={background_styles}>
@@ -348,7 +365,7 @@ pub fn text_box_render(
                             <TextWidgetBundle
                                 styles={text_styles}
                                 text={TextProps {
-                                    content: text_box.value.clone(),
+                                    content: content,
                                     size: 14.0,
                                     line_height: Some(18.0),
                                     word_wrap: false,
@@ -376,7 +393,11 @@ pub fn text_box_render(
 ///
 /// Context: [Wikipedia](https://en.wikipedia.org/wiki/Backspace#Common_use)
 fn is_backspace(c: char) -> bool {
-    c == '\u{8}' || c == '\u{7f}'
+    c == '\u{8}'
+}
+
+fn is_delete(c: char) -> bool {
+    c == '\u{7f}'
 }
 
 fn set_graphemes(
